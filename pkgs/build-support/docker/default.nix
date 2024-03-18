@@ -1275,7 +1275,7 @@ rec {
 
         # Run this image as the given uid/gid
         config.User = "${toString uid}:${toString gid}";
-        config.Entrypoint =
+        config.Cmd =
           # https://github.com/NixOS/nix/blob/2.8.0/src/nix-build/nix-build.cc#L185-L186
           # https://github.com/NixOS/nix/blob/2.8.0/src/nix-build/nix-build.cc#L534-L536
           if run == null
