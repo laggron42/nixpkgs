@@ -1132,6 +1132,7 @@ rec {
       command ? null
     , # Same as `command`, but runs the command in a non-interactive shell instead. See `--run` in `man nix-shell`
       run ? null
+    , extraPackages ? []
     }:
       assert lib.assertMsg (! (drv.drvAttrs.__structuredAttrs or false))
         "streamNixShellImage: Does not work with the derivation ${drv.name} because it uses __structuredAttrs";
@@ -1144,7 +1145,7 @@ rec {
           exec ${lib.escapeShellArg (stringValue drv.drvAttrs.builder)} ${lib.escapeShellArgs (map stringValue drv.drvAttrs.args)}
         '';
 
-        staticPath = "${dirOf shell}:${lib.makeBinPath [ builder ]}";
+        staticPath = "${dirOf shell}:${lib.makeBinPath ([ builder ] ++ extraPackages )}";
 
         # https://github.com/NixOS/nix/blob/2.8.0/src/nix-build/nix-build.cc#L493-L526
         rcfile = writeText "nix-shell-rc" ''
@@ -1274,7 +1275,7 @@ rec {
 
         # Run this image as the given uid/gid
         config.User = "${toString uid}:${toString gid}";
-        config.Cmd =
+        config.Entrypoint =
           # https://github.com/NixOS/nix/blob/2.8.0/src/nix-build/nix-build.cc#L185-L186
           # https://github.com/NixOS/nix/blob/2.8.0/src/nix-build/nix-build.cc#L534-L536
           if run == null
