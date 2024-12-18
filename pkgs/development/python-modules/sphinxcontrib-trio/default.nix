@@ -5,6 +5,9 @@
   setuptools,
   wheel,
   sphinx,
+  pytestCheckHook,
+  lxml,
+  cssselect,
 }:
 
 buildPythonPackage rec {
@@ -23,6 +26,15 @@ buildPythonPackage rec {
   ];
 
   dependencies = [ sphinx ];
+
+  nativeCheckInputs = [
+    pytestCheckHook
+    lxml
+    sphinx
+    cssselect
+  ];
+
+  disabledTests = [ "test_end_to_end" ];
 
   pythonImportsCheck = [ "sphinxcontrib_trio" ];
 
